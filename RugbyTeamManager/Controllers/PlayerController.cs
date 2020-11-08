@@ -3,6 +3,9 @@ using Microsoft.Extensions.Logging;
 using RugbyTeamManager.Database.DBContext;
 using RugbyTeamManager.Models.DTO;
 using RugbyTeamManager.Models.Player;
+using System.Data.Entity.Infrastructure;
+using System.Text;
+using System.Xml;
 
 namespace RugbyTeamManager.Controllers
 {
@@ -46,6 +49,21 @@ namespace RugbyTeamManager.Controllers
             }
 
             return result;
+        }
+
+        [HttpGet]
+        [Route("GetEDMX")]
+        public string GetEDMX()
+        {
+            using (var ctx = new TestContext())
+            {
+                using (var writer = new XmlTextWriter(@"c:\Model.edmx", Encoding.Default))
+                {
+                    EdmxWriter.WriteEdmx(ctx, writer);
+                }
+            }
+
+            return "Done";
         }
     }
 }
