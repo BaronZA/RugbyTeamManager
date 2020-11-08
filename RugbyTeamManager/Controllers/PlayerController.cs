@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RugbyTeamManager.Models;
-using System;
-using System.Linq;
+using RugbyTeamManager.Models.Player;
 
 namespace RugbyTeamManager.Controllers
 {
