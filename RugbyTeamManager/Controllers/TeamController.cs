@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RugbyTeamManager.Database.DBContext;
 using RugbyTeamManager.Models.DTO;
 using RugbyTeamManager.Models.Team;
+using System.Linq;
 
 namespace RugbyTeamManager.Controllers
 {
@@ -8,6 +10,13 @@ namespace RugbyTeamManager.Controllers
     [Route("api/[controller]")]
     public class TeamController : ControllerBase
     {
+        private readonly TeamManagerContext _context;
+
+        public TeamController(TeamManagerContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet]
         [Route("GetAllTeamsTEST")]
         public GetTeams GetAllTeamsTEST()
@@ -20,5 +29,7 @@ namespace RugbyTeamManager.Controllers
 
             return result;
         }
+
+        
     }
 }
