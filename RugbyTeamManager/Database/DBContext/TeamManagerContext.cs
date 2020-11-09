@@ -9,6 +9,10 @@ namespace RugbyTeamManager.Database.DBContext
         {
         }
 
+        public TeamManagerContext()
+        {
+
+        }
 
         public DbSet<Player> Players { get; set; }
         public DbSet<Team> Teams { get; set; }
