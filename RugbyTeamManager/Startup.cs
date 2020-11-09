@@ -22,7 +22,6 @@ namespace RugbyTeamManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<TeamManagerContext>(opt => opt.UseInMemoryDatabase("TeamManagerDB"));
-            services.AddScoped<TeamManagerContext>();
 
             services.AddControllers();
 
@@ -47,6 +46,16 @@ namespace RugbyTeamManager
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Rugby Team Manager API V1");
                 });
+            }
+
+            using (var serviceScope = app.ApplicationServices.CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<TeamManagerContext>();
+
+                TeamManagerContextSeed.LoadDefaultMemoryStadiums(context);
+                TeamManagerContextSeed.LoadDefaultMemoryTeams(context);
+                TeamManagerContextSeed.LoadDefaultMemoryPlayers(context);
+                // Seed the database.
             }
 
             app.UseHttpsRedirection();

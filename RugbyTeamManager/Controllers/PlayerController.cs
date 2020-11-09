@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RugbyTeamManager.Database.DBContext;
+using RugbyTeamManager.Database.DBModels;
 using RugbyTeamManager.Models.DTO;
 using RugbyTeamManager.Models.Player;
 using System;
 using System.Data.Entity.Infrastructure;
+using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -42,7 +44,7 @@ namespace RugbyTeamManager.Controllers
         {
             var result = new GetPlayersResponse();
 
-            var playersDb = _context.GetPlayers();
+            var playersDb = _context.Players.ToList();
 
             foreach (var player in playersDb)
             {
@@ -73,9 +75,10 @@ namespace RugbyTeamManager.Controllers
         {
             var response = new CreatePlayerResponse() {ResponseMessage = Models.ResponseMessage.Failure };
 
-            var success = _context.CreatePlayer(request.Player.FirstName, request.Player.LastName, request.Player.Height, request.Player.Position, request.Player.DateOfBirth, request.Player.TeamId);
+            _context.Players.Add(new Player(request.Player.FirstName, request.Player.LastName, request.Player.Height, request.Player.Position, request.Player.DateOfBirth, request.Player.TeamId));
+            var success = _context.SaveChanges();
 
-            if (success)
+            if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
             return null;
@@ -87,9 +90,21 @@ namespace RugbyTeamManager.Controllers
         {
             var response = new UpdatePlayerResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
-            var success = _context.UpdatePlayer(request.Player.Id, request.Player.FirstName, request.Player.LastName, request.Player.Height, request.Player.Position, request.Player.DateOfBirth, request.Player.TeamId);
+            var player = _context.Players.FirstOrDefault(t => t.Id == request.Player.Id);
 
-            if (success)
+            if (player == null)
+                return response;
+
+            player.FirstName = request.Player.FirstName;
+            player.LastName = request.Player.LastName;
+            player.Height = request.Player.Height;
+            player.Position = request.Player.Position;
+            player.DateOfBirth = request.Player.DateOfBirth;
+            player.TeamId = request.Player.TeamId;
+
+            var success = _context.SaveChanges();
+
+            if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
             return null;
@@ -101,9 +116,12 @@ namespace RugbyTeamManager.Controllers
         {
             var response = new DeletePlayerResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
-            var success = _context.DeletePlayer(id);
+            var player = _context.Players.FirstOrDefault(t => t.Id == id);
 
-            if (success)
+            _context.Players.Remove(player);
+            var success = _context.SaveChanges();
+
+            if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
             return null;
@@ -115,9 +133,17 @@ namespace RugbyTeamManager.Controllers
         {
             var response = new LinkPlayerToTeamResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
-            var success = _context.LinkPlayerToTeam(request.PlayerId, request.TeamId);
+            var player = _context.Players.FirstOrDefault(t => t.Id == request.PlayerId);
+            var team = _context.Teams.FirstOrDefault(t => t.Id == request.TeamId);
 
-            if (success)
+            if(player == null || team == null)
+                return response;
+
+            player.TeamId = team.Id;
+
+            var success = _context.SaveChanges();
+
+            if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
             return null;
