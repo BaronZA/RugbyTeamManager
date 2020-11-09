@@ -4,11 +4,7 @@ using RugbyTeamManager.Database.DBContext;
 using RugbyTeamManager.Database.DBModels;
 using RugbyTeamManager.Models.DTO;
 using RugbyTeamManager.Models.Player;
-using System;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Text;
-using System.Xml;
 
 namespace RugbyTeamManager.Controllers
 {
@@ -27,14 +23,14 @@ namespace RugbyTeamManager.Controllers
 
         [HttpGet]
         [Route("GetPlayer")]
-        public GetPlayerResponse GetPlayer(int id)
+        public ActionResult<GetPlayerResponse> GetPlayer(int id)
         {
             var response = new GetPlayerResponse();
 
             var player = _context.Players.FirstOrDefault(t => t.Id == id);
 
             if (player == null)
-                return response;
+                return NotFound(response);
 
             response.Player.Id = player.Id;
             response.Player.FirstName = player.FirstName;
@@ -46,20 +42,20 @@ namespace RugbyTeamManager.Controllers
             response.Player.TeamId = player.TeamId;
 
 
-            return response;
+            return Ok(response);
         }
 
         [HttpGet]
         [Route("GetAllPlayers")]
-        public GetPlayersResponse GetAllPlayers()
+        public ActionResult<GetPlayersResponse> GetAllPlayers()
         {
-            var result = new GetPlayersResponse();
+            var response = new GetPlayersResponse();
 
             var players = _context.Players.ToList();
 
             foreach (var player in players)
             {
-                result.Players.Add(new PlayerDTO() 
+                response.Players.Add(new PlayerDTO() 
                 {
                     Id = player.Id,
                     FirstName = player.FirstName,
@@ -72,27 +68,12 @@ namespace RugbyTeamManager.Controllers
                 });
             }
 
-            return result;
-        }
-
-        [HttpGet]
-        [Route("GetEDMX")]
-        public string GetEDMX()
-        {
-            using (var ctx = new TestContext())
-            {
-                using (var writer = new XmlTextWriter(@"c:\Model.edmx", Encoding.Default))
-                {
-                    EdmxWriter.WriteEdmx(ctx, writer);
-                }
-            }
-
-            return "Done";
+            return Ok(response);
         }
 
         [HttpPost]
         [Route("CreatePlayer")]
-        public CreatePlayerResponse CreatePlayer(CreatePlayerRequest request)
+        public ActionResult<CreatePlayerResponse> CreatePlayer(CreatePlayerRequest request)
         {
             var response = new CreatePlayerResponse() {ResponseMessage = Models.ResponseMessage.Failure };
 
@@ -104,19 +85,19 @@ namespace RugbyTeamManager.Controllers
             if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
-            return null;
+            return Ok(response);
         }
 
         [HttpPut]
         [Route("UpdatePlayer")]
-        public UpdatePlayerResponse UpdatePlayer(UpdatePlayerRequest request)
+        public ActionResult<UpdatePlayerResponse> UpdatePlayer(UpdatePlayerRequest request)
         {
             var response = new UpdatePlayerResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
             var player = _context.Players.FirstOrDefault(t => t.Id == request.Player.Id);
 
             if (player == null)
-                return response;
+                return NotFound(response);
 
             player.FirstName = request.Player.FirstName;
             player.LastName = request.Player.LastName;
@@ -131,12 +112,12 @@ namespace RugbyTeamManager.Controllers
             if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
-            return null;
+            return Ok(response);
         }
 
         [HttpDelete]
         [Route("DeletePlayer")]
-        public DeletePlayerResponse DeletePlayer(int id)
+        public ActionResult<DeletePlayerResponse> DeletePlayer(int id)
         {
             var response = new DeletePlayerResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
@@ -148,12 +129,12 @@ namespace RugbyTeamManager.Controllers
             if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
-            return null;
+            return Ok(response);
         }
 
         [HttpPut]
         [Route("TransferPlayerToTeam")]
-        public TransferPlayerToTeamResponse TransferPlayerToTeam(TransferPlayerToTeamRequest request)
+        public ActionResult<TransferPlayerToTeamResponse> TransferPlayerToTeam(TransferPlayerToTeamRequest request)
         {
             var response = new TransferPlayerToTeamResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
@@ -161,7 +142,7 @@ namespace RugbyTeamManager.Controllers
             var team = _context.Teams.FirstOrDefault(t => t.Id == request.TeamId);
 
             if(player == null || team == null)
-                return response;
+                return NotFound(response);
 
             player.TeamId = team.Id;
 
@@ -170,7 +151,7 @@ namespace RugbyTeamManager.Controllers
             if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
-            return null;
+            return Ok(response);
         }
     }
 }

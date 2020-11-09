@@ -23,34 +23,34 @@ namespace RugbyTeamManager.Controllers
 
         [HttpGet]
         [Route("GetStadium")]
-        public GetStadiumResponse GetStadium(int id)
+        public ActionResult<GetStadiumResponse> GetStadium(int id)
         {
             var response = new GetStadiumResponse();
 
             var stadium = _context.Stadiums.FirstOrDefault(t => t.Id == id);
 
             if (stadium == null)
-                return response;
+                return NotFound(response);
 
             response.Stadium.Id = stadium.Id;
             response.Stadium.Name = stadium.Name;
             response.Stadium.Address = stadium.Address;
             response.Stadium.SeatCount = stadium.SeatCount;
 
-            return response;
+            return Ok(response);
         }
 
         [HttpGet]
         [Route("GetAllStadiums")]
-        public GetStadiumsResponse GetAllStadiums()
+        public ActionResult<GetStadiumsResponse> GetAllStadiums()
         {
-            var result = new GetStadiumsResponse();
+            var response = new GetStadiumsResponse();
 
             var stadiums = _context.Stadiums.ToList();
 
             foreach (var stadium in stadiums)
             {
-                result.Stadiums.Add(new StadiumDTO()
+                response.Stadiums.Add(new StadiumDTO()
                 {
                     Id = stadium.Id,
                     Name = stadium.Name,
@@ -59,12 +59,12 @@ namespace RugbyTeamManager.Controllers
                 });
             }
 
-            return result;
+            return Ok(response);
         }
 
         [HttpPost]
         [Route("CreateStadium")]
-        public CreateStadiumResponse CreateStadium(CreateStadiumRequest request)
+        public ActionResult<CreateStadiumResponse> CreateStadium(CreateStadiumRequest request)
         {
             var response = new CreateStadiumResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
@@ -74,19 +74,19 @@ namespace RugbyTeamManager.Controllers
             if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
-            return null;
+            return Ok(response);
         }
 
         [HttpPut]
         [Route("UpdateStadium")]
-        public UpdateStadiumResponse UpdateStadium(UpdateStadiumRequest request)
+        public ActionResult<UpdateStadiumResponse> UpdateStadium(UpdateStadiumRequest request)
         {
             var response = new UpdateStadiumResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
             var stadium = _context.Stadiums.FirstOrDefault(t => t.Id == request.Stadium.Id);
 
             if (stadium == null)
-                return response;
+                return NotFound(response);
 
             stadium.Name = request.Stadium.Name;
             stadium.Address = request.Stadium.Address;
@@ -97,16 +97,19 @@ namespace RugbyTeamManager.Controllers
             if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
-            return null;
+            return Ok(response);
         }
 
         [HttpDelete]
         [Route("DeleteStadium")]
-        public DeleteStadiumResponse DeleteStadium(int id)
+        public ActionResult<DeleteStadiumResponse> DeleteStadium(int id)
         {
             var response = new DeleteStadiumResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
             var stadium = _context.Stadiums.FirstOrDefault(t => t.Id == id);
+
+            if (stadium == null)
+                return NotFound(response);
 
             _context.Stadiums.Remove(stadium);
             var success = _context.SaveChanges();
@@ -114,7 +117,7 @@ namespace RugbyTeamManager.Controllers
             if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
-            return null;
+            return Ok(response);
         }
     }
 }

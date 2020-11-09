@@ -23,14 +23,14 @@ namespace RugbyTeamManager.Controllers
 
         [HttpGet]
         [Route("GetTeam")]
-        public GetTeamResponse GetTeam(int id)
+        public ActionResult<GetTeamResponse> GetTeam(int id)
         {
             var response = new GetTeamResponse();
 
             var team = _context.Teams.FirstOrDefault(t => t.Id == id);
 
             if (team == null)
-                return response;
+                return NotFound(response);
 
             response.Team.Id = team.Id;
             response.Team.Name = team.Name;
@@ -38,20 +38,20 @@ namespace RugbyTeamManager.Controllers
             response.Team.Location = team.Location;
             response.Team.StadiumId = team.StadiumId;
 
-            return response;
+            return Ok(response);
         }
 
         [HttpGet]
         [Route("GetAllTeams")]
-        public GetTeamsResponse GetAllTeams()
+        public ActionResult<GetTeamsResponse> GetAllTeams()
         {
-            var result = new GetTeamsResponse();
+            var response = new GetTeamsResponse();
 
             var teams = _context.Teams.ToList();
 
             foreach (var team in teams)
             {
-                result.Teams.Add(new TeamDTO()
+                response.Teams.Add(new TeamDTO()
                 {
                     Id = team.Id,
                     Name = team.Name,
@@ -61,12 +61,12 @@ namespace RugbyTeamManager.Controllers
                 });
             }
 
-            return result;
+            return Ok(response);
         }
 
         [HttpPost]
         [Route("CreateTeam")]
-        public CreateTeamResponse CreateTeam(CreateTeamRequest request)
+        public ActionResult<CreateTeamResponse> CreateTeam(CreateTeamRequest request)
         {
             var response = new CreateTeamResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
@@ -78,19 +78,19 @@ namespace RugbyTeamManager.Controllers
             if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
-            return null;
+            return Ok(response);
         }
 
         [HttpPut]
         [Route("UpdateTeam")]
-        public UpdateTeamResponse UpdateTeam(UpdateTeamRequest request)
+        public ActionResult<UpdateTeamResponse> UpdateTeam(UpdateTeamRequest request)
         {
             var response = new UpdateTeamResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
             var team = _context.Teams.FirstOrDefault(t => t.Id == request.Team.Id);
 
             if (team == null)
-                return response;
+                return NotFound(response);
 
             team.Name = request.Team.Name;
             team.Nickname = request.Team.Nickname;
@@ -102,16 +102,19 @@ namespace RugbyTeamManager.Controllers
             if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
-            return null;
+            return Ok(response);
         }
 
         [HttpDelete]
         [Route("DeleteTeam")]
-        public DeleteTeamResponse DeleteTeam(int id)
+        public ActionResult<DeleteTeamResponse> DeleteTeam(int id)
         {
             var response = new DeleteTeamResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
             var team = _context.Teams.FirstOrDefault(t => t.Id == id);
+
+            if (team == null)
+                return NotFound(response);
 
             _context.Teams.Remove(team);
             var success = _context.SaveChanges();
@@ -119,12 +122,12 @@ namespace RugbyTeamManager.Controllers
             if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
-            return null;
+            return Ok(response);
         }
 
         [HttpPut]
         [Route("LinkTeamToStadium")]
-        public LinkTeamToStadiumResponse LinkTeamToStadium(LinkTeamToStadiumRequest request)
+        public ActionResult<LinkTeamToStadiumResponse> LinkTeamToStadium(LinkTeamToStadiumRequest request)
         {
             var response = new LinkTeamToStadiumResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
@@ -132,7 +135,7 @@ namespace RugbyTeamManager.Controllers
             var stadium = _context.Stadiums.FirstOrDefault(t => t.Id == request.StadiumId);
 
             if (team == null || stadium == null)
-                return response;
+                return NotFound(response);
 
             team.StadiumId = stadium.Id;
 
@@ -141,7 +144,7 @@ namespace RugbyTeamManager.Controllers
             if (success > 0)
                 response.ResponseMessage = Models.ResponseMessage.Success;
 
-            return null;
+            return Ok(response);
         }
     }
 }
