@@ -22,6 +22,7 @@ namespace RugbyTeamManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<TeamManagerContext>(opt => opt.UseInMemoryDatabase("TeamManagerDB"));
+            services.AddScoped<TeamManagerContext>();
 
             services.AddControllers();
 
