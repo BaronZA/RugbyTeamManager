@@ -2,7 +2,7 @@
 
 namespace RugbyTeamManager.Models.Team
 {
-    public class GetTeam
+    public class GetTeamResponse
     {
         public TeamDTO Team { get; set; }
     }

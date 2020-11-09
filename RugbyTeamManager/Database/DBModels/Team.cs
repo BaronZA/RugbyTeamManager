@@ -6,10 +6,11 @@
         {
 
         }
-        public Team(string name, string nickname, int? stadiumId = null)
+        public Team(string name, string nickname, string location, int? stadiumId = null)
         {
             Name = name;
             Nickname = nickname;
+            Location = location;
             StadiumId = stadiumId;
         }
 

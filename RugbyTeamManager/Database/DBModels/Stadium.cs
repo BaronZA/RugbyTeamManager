@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace RugbyTeamManager.Database.DBModels
+﻿namespace RugbyTeamManager.Database.DBModels
 {
     public class Stadium
     {
@@ -11,14 +6,16 @@ namespace RugbyTeamManager.Database.DBModels
         {
               
         }
-        public Stadium(string name, string address)
+        public Stadium(string name, string address, int seatCount)
         {
             Name = name;
             Address = address;
+            SeatCount = SeatCount;
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
+        public int SeatCount { get; set; }
     }
 }

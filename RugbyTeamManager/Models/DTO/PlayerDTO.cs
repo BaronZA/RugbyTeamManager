@@ -11,6 +11,7 @@ namespace RugbyTeamManager.Models.DTO
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public double Height { get; set; }
+        public double Weight { get; set; }
         public string Position { get; set; }
         public DateTime DateOfBirth { get; set; }
         public int? TeamId { get; set; }

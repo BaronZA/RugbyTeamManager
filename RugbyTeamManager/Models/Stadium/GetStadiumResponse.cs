@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RugbyTeamManager.Models.Stadium
 {
-    public class GetStadium
+    public class GetStadiumResponse
     {
         public StadiumDTO Stadium { get; set; }
     }

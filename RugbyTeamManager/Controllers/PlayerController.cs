@@ -26,29 +26,50 @@ namespace RugbyTeamManager.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllPlayersTEST")]
-        public GetPlayersResponse GetAllPlayersTEST()
+        [Route("GetPlayer")]
+        public GetPlayerResponse GetPlayer(int id)
         {
-            var result = new GetPlayersResponse();
+            var response = new GetPlayerResponse();
 
-            result.Players.Add(new PlayerDTO() { FirstName = "Johnson" });
-            result.Players.Add(new PlayerDTO() { FirstName = "Smith" });
-            result.Players.Add(new PlayerDTO() { FirstName = "James" });
-            result.Players.Add(new PlayerDTO() { FirstName = "Cage" });
-            return result;
+            var player = _context.Players.FirstOrDefault(t => t.Id == id);
+
+            if (player == null)
+                return response;
+
+            response.Player.Id = player.Id;
+            response.Player.FirstName = player.FirstName;
+            response.Player.LastName = player.LastName;
+            response.Player.Height = player.Height;
+            response.Player.Weight = player.Weight;
+            response.Player.Position = player.Position;
+            response.Player.DateOfBirth = player.DateOfBirth;
+            response.Player.TeamId = player.TeamId;
+
+
+            return response;
         }
 
         [HttpGet]
-        [Route("GetAllPlayersDBTEST")]
-        public GetPlayersResponse GetAllPlayersDBTEST()
+        [Route("GetAllPlayers")]
+        public GetPlayersResponse GetAllPlayers()
         {
             var result = new GetPlayersResponse();
 
-            var playersDb = _context.Players.ToList();
+            var players = _context.Players.ToList();
 
-            foreach (var player in playersDb)
+            foreach (var player in players)
             {
-                result.Players.Add(new PlayerDTO() { FirstName = player.FirstName });
+                result.Players.Add(new PlayerDTO() 
+                {
+                    Id = player.Id,
+                    FirstName = player.FirstName,
+                    LastName = player.LastName,
+                    Height = player.Height,
+                    Weight = player.Weight,
+                    Position = player.Position,
+                    DateOfBirth = player.DateOfBirth,
+                    TeamId = player.TeamId
+                });
             }
 
             return result;
@@ -75,7 +96,9 @@ namespace RugbyTeamManager.Controllers
         {
             var response = new CreatePlayerResponse() {ResponseMessage = Models.ResponseMessage.Failure };
 
-            _context.Players.Add(new Player(request.Player.FirstName, request.Player.LastName, request.Player.Height, request.Player.Position, request.Player.DateOfBirth, request.Player.TeamId));
+            int? teamId = request.Player.TeamId == 0 ? null : request.Player.TeamId;
+            _context.Players.Add(new Player(request.Player.FirstName, request.Player.LastName, request.Player.Height, request.Player.Weight, request.Player.Position, request.Player.DateOfBirth, teamId));
+
             var success = _context.SaveChanges();
 
             if (success > 0)
@@ -98,9 +121,10 @@ namespace RugbyTeamManager.Controllers
             player.FirstName = request.Player.FirstName;
             player.LastName = request.Player.LastName;
             player.Height = request.Player.Height;
+            player.Weight = request.Player.Weight;
             player.Position = request.Player.Position;
             player.DateOfBirth = request.Player.DateOfBirth;
-            player.TeamId = request.Player.TeamId;
+            player.TeamId = request.Player.TeamId == 0 ? null : request.Player.TeamId;
 
             var success = _context.SaveChanges();
 

@@ -8,11 +8,12 @@ namespace RugbyTeamManager.Database.DBModels
         {
 
         }
-        public Player(string firstName, string lastName, double height, string position, DateTime dateOfBirth, int? teamId = null)
+        public Player(string firstName, string lastName, double height, double weight, string position, DateTime dateOfBirth, int? teamId = null)
         {
             FirstName = firstName;
             LastName = lastName;
             Height = height;
+            Weight = weight;
             Position = position;
             DateOfBirth = dateOfBirth;
             TeamId = teamId;
@@ -22,6 +23,7 @@ namespace RugbyTeamManager.Database.DBModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public double Height { get; set; }
+        public double Weight { get; set; }
         public string Position { get; set; }
         public DateTime DateOfBirth { get; set; }
         public int? TeamId { get; set; }

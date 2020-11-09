@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RugbyTeamManager.Models.Team
 {
-    public class GetTeams
+    public class GetTeamsResponse
     {
         public List<TeamDTO> Teams { get; set; } = new List<TeamDTO>();
     }
