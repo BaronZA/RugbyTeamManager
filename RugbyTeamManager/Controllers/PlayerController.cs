@@ -152,10 +152,10 @@ namespace RugbyTeamManager.Controllers
         }
 
         [HttpPut]
-        [Route("LinkPlayerToTeam")]
-        public LinkPlayerToTeamResponse LinkPlayerToTeamPlayer(LinkPlayerToTeamRequest request)
+        [Route("TransferPlayerToTeam")]
+        public TransferPlayerToTeamResponse TransferPlayerToTeam(TransferPlayerToTeamRequest request)
         {
-            var response = new LinkPlayerToTeamResponse() { ResponseMessage = Models.ResponseMessage.Failure };
+            var response = new TransferPlayerToTeamResponse() { ResponseMessage = Models.ResponseMessage.Failure };
 
             var player = _context.Players.FirstOrDefault(t => t.Id == request.PlayerId);
             var team = _context.Teams.FirstOrDefault(t => t.Id == request.TeamId);

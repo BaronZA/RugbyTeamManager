@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RugbyTeamManager.Models.Player
 {
-    public class LinkPlayerToTeamResponse : BaseResponse
+    public class TransferPlayerToTeamResponse : BaseResponse
     {
     }
 }
